@@ -57,11 +57,3 @@ fig2, ax2 = plt.subplots(figsize=(10, 6))
 corr = df.corr(numeric_only=True)
 sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2, linewidths=0.5)
 st.pyplot(fig2)
-
-st.markdown(
-    """
----
-ℹ️ **Catatan:**  
-Analisis ini merupakan tahap awal yang penting sebelum proses pemodelan machine learning dilakukan.
-"""
-)
