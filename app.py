@@ -9,7 +9,7 @@ df = load_data()
 
 st.set_page_config(page_title="Dashboard Kelulusan Mahasiswa", layout="wide", page_icon="🎓")
 
-st.tittle("🎓 Dashboard Kelulusan Mahasiswa")
+st.title("🎓 Dashboard Kelulusan Mahasiswa")
 st.markdown("### Selamat datang! 👋")
 
 st.markdown(
