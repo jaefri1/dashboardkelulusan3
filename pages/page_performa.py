@@ -7,12 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-st.title("🤖 Pelatihan Model Prediksi Kelulusan (Optimasi)")
-st.markdown(
-    """
-    Pada halaman ini akan ditunjukkan tingkat akurasi dari model yang telah dipilih, di mana kami menggunakan model Random Forest Classifier 📈🧮
-"""
-)
+st.title("🤖 Pelatihan Model Prediksi Kelulusan")
 
 @st.cache_data
 def load_data():
@@ -20,43 +15,48 @@ def load_data():
 
 df = load_data()
 
-# One-hot encoding
-df_encoded = pd.get_dummies(df, columns=["Pekerjaan Sambil Kuliah", "Kategori Kehadiran"], drop_first=True)
+# Fitur kategorikal dan numerik
+categorical_cols = ["Pekerjaan Sambil Kuliah", "Kategori Kehadiran"]
+numerical_cols = ["IPK", "Semester", "Jumlah SKS"]
 
-# Distribusi label
-st.subheader("Distribusi Status Kelulusan")
-st.bar_chart(df["Status Kelulusan"].value_counts())
+# One-hot encoding untuk fitur kategorikal
+df_encoded = pd.get_dummies(df[categorical_cols], drop_first=True)
 
-X = df_encoded.drop("Status Kelulusan", axis=1)
-y = df_encoded["Status Kelulusan"]
+# Gabungkan semua fitur
+X = pd.concat([df[numerical_cols], df_encoded], axis=1)
+y = df["Status Kelulusan"]
 
-# Slider proporsi uji
+# Slider proporsi data uji
 test_size = st.slider("Pilih proporsi data uji (%)", 10, 90, 20, step=10) / 100
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=42)
 
-# Random Forest dengan class_weight
-model_rf = RandomForestClassifier(n_estimators=200, max_depth=7, class_weight="balanced", random_state=42)
+# Model Random Forest
+model_rf = RandomForestClassifier(n_estimators=200, max_depth=5, random_state=42)
 model_rf.fit(X_train, y_train)
 y_pred_rf = model_rf.predict(X_test)
 
-# Logistic Regression sebagai pembanding
-model_lr = LogisticRegression(max_iter=1000, class_weight="balanced")
+# Model Logistic Regression
+model_lr = LogisticRegression(max_iter=1000)
 model_lr.fit(X_train, y_train)
 y_pred_lr = model_lr.predict(X_test)
 
+# Hasil akurasi
 st.subheader("Akurasi Model")
 st.write(f"Random Forest: {accuracy_score(y_test, y_pred_rf):.2f}")
 st.write(f"Logistic Regression: {accuracy_score(y_test, y_pred_lr):.2f}")
 
+# Confusion Matrix
 st.subheader("Confusion Matrix - Random Forest")
 fig, ax = plt.subplots()
 sns.heatmap(confusion_matrix(y_test, y_pred_rf), annot=True, fmt="d", cmap="Blues", ax=ax)
 st.pyplot(fig)
 
+# Classification Report
 st.subheader("Classification Report - Random Forest")
 st.text(classification_report(y_test, y_pred_rf))
 
-st.subheader("Feature Importance")
+# Feature Importance
+st.subheader("Feature Importance - Random Forest")
 importance_df = pd.DataFrame({
     "Fitur": X.columns,
     "Penting": model_rf.feature_importances_
