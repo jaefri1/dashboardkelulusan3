@@ -15,9 +15,9 @@ st.markdown("### Selamat datang! 👋")
 st.markdown(
     """
 Kami dari **Kelompok 13** mempersembahkan sebuah dashboard interaktif yang membahas  
-**Analisis Kelulusan Mahasiswa Berbasis Data Mining**. 📊🎯
+**Analisis Kelulusan Mahasiswa Berbasis Data Mining**📊🎯
 
-Proyek ini bertujuan untuk memberikan wawasan mengenai karakteristik mahasiswa, mengevaluasi performa model prediksi, serta memperkirakan kelulusan berdasarkan data historis.
+Dashboard ini dirancang untuk memberikan wawasan mengenai karakteristik mahasiswa, mengevaluasi performa model prediksi, serta memperkirakan kelulusan berdasarkan data historis.
 
 ---
 
