@@ -13,7 +13,7 @@ st.title("🎓 Dashboard Kelulusan Mahasiswa")
 st.markdown("### Selamat datang! 👋")
 
 st.markdown(
-    """"
+    """
 Kami dari **Kelompok 13** mempersembahkan sebuah dashboard interaktif yang membahas  
 **Analisis Kelulusan Mahasiswa Berbasis Data Mining**📊🎯
 
@@ -30,6 +30,6 @@ Dashboard ini dirancang untuk memberikan wawasan mengenai karakteristik mahasisw
 
 📂 **Sumber Data:**  
 [Dataset Kelulusan Mahasiswa - Kaggle](https://www.kaggle.com/datasets/afitoindrapermana/dataset-kelulusan-mahasiswa)
-""""
+"""
 )
 st.dataframe(df)
