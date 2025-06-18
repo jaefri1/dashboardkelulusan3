@@ -22,7 +22,7 @@ Dashboard ini dirancang untuk memberikan wawasan mengenai karakteristik mahasisw
 ---
 
 🔍 **Gunakan menu di sebelah kiri untuk menjelajahi fitur-fitur berikut:**
-- 📊 **EDA & Dataset**: Visualisasi dan penjelajahan data kelulusan
+- 📊 **Eksplorasi Data**: Visualisasi dan penjelajahan data kelulusan
 - ⚙️ **Performa Model**: Menampilkan evaluasi dari model klasifikasi yang digunakan
 - 🧮 **Prediksi Kelulusan**: Formulir untuk memprediksi status kelulusan mahasiswa
 
