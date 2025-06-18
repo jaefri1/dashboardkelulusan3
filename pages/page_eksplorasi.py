@@ -19,7 +19,16 @@ fig, ax = plt.subplots()
 sns.countplot(x="Status Kelulusan", data=df, ax=ax)
 st.pyplot(fig)
 
-st.subheader("Korelasi Fitur")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(df.corr(), annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
-st.pyplot(fig)
+st.subheader("📉 Distribusi Fitur Numerik Berdasarkan Status Kelulusan")
+
+    fitur_numerik = ['IPK', 'IPS Rata-rata', 'IPS Semester Akhir', 
+                     'IPS Tren', 'Jumlah Semester', 'Mata Kuliah Tidak Lulus']
+
+    for fitur in fitur_numerik:
+        st.markdown(f"### {fitur}")
+        fig, ax = plt.subplots()
+        sns.boxplot(x='Status Kelulusan', y=fitur, data=df, palette='pastel')
+        ax.set_xticklabels(['Tidak Lulus', 'Lulus'])
+        ax.set_title(f"Distribusi {fitur} berdasarkan Status Kelulusan")
+        st.pyplot(fig)
+
