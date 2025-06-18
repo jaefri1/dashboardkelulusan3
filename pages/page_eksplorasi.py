@@ -12,10 +12,10 @@ def load_data():
 df = load_data()
 
 st.markdown(
-""
+"""
 Halaman ini menyajikan analisis deskriptif dan visualisasi untuk memahami pola dan hubungan antar fitur dalam dataset kelulusan mahasiswa.  
 Analisis ini membantu dalam tahap awal memahami struktur data sebelum membangun model prediksi.
-""
+"""
 )
 
 st.markdown(
