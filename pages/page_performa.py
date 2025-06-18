@@ -19,9 +19,12 @@ le = LabelEncoder()
 df["Pekerjaan Sambil Kuliah"] = le.fit_transform(df["Pekerjaan Sambil Kuliah"])
 df["Kategori Kehadiran"] = le.fit_transform(df["Kategori Kehadiran"])
 
+# Slider untuk menentukan rasio data pelatihan
+train_size = st.slider("Pilih proporsi data pelatihan", min_value=0.1, max_value=0.9, value=0.8, step=0.1)
+
 X = df.drop("Status Kelulusan", axis=1)
 y = df["Status Kelulusan"]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_size, random_state=42)
 
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
@@ -46,3 +49,7 @@ importance_df = pd.DataFrame({
 fig, ax = plt.subplots()
 sns.barplot(data=importance_df, x="Penting", y="Fitur", ax=ax)
 st.pyplot(fig)
+
+# Simpan model dan train_size di session_state untuk digunakan di halaman prediksi
+st.session_state.model = model
+st.session_state.train_size = train_size
