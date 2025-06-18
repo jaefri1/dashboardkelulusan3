@@ -11,6 +11,12 @@ def load_data():
 
 df = load_data()
 
+st.markdown(
+    """
+    ✏️ Silakan masukkan data Anda untuk memprediksi peluang kelulusan berdasarkan model *Random Forest Classifier*🔍
+    """
+)
+
 le_pekerjaan = LabelEncoder()
 le_kehadiran = LabelEncoder()
 
