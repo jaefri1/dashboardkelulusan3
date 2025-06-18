@@ -7,6 +7,14 @@ def load_data():
 
 df = load_data()
 
+st.sidebar.title("Navigasi")
+st.sidebar.markdown("""
+- Halaman Utama  
+- EDA  
+- Performa Model  
+- Prediksi
+""")
+
 st.set_page_config(page_title="Dashboard Kelulusan Mahasiswa", layout="wide", page_icon="🎓")
 
 st.title("🎓 Dashboard Kelulusan Mahasiswa")
