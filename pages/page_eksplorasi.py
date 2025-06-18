@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title("📊 Eksplorasi Data")
+st.title("📊 Eksplorasi Data Kelulusan Mahasiswa")
 
 @st.cache_data
 def load_data():
@@ -12,7 +12,15 @@ def load_data():
 df = load_data()
 
 st.markdown(
-    """
+""
+Halaman ini menyajikan analisis deskriptif dan visualisasi untuk memahami pola dan hubungan antar fitur dalam dataset kelulusan mahasiswa.  
+Analisis ini membantu dalam tahap awal memahami struktur data sebelum membangun model prediksi.
+""
+)
+
+st.markdown(
+"""
+---
 ## 📌 Statistik Deskriptif
 
 Berikut adalah ringkasan statistik untuk fitur numerik dalam dataset:
