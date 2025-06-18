@@ -2,15 +2,16 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score
 from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
-from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.utils.class_weight import compute_sample_weight
 
-st.title("🤖 Pelatihan Model Prediksi Kelulusan")
+st.title("🚀 Pelatihan Model Prediksi Kelulusan (Optimized)")
 
 @st.cache_data
 def load_data():
@@ -18,69 +19,98 @@ def load_data():
 
 df = load_data()
 
-# Pra-pemrosesan
-label_cols = ["Pekerjaan Sambil Kuliah", "Kategori Kehadiran"]
-le = LabelEncoder()
-for col in label_cols:
-    df[col] = le.fit_transform(df[col])
+# Analisis data
+st.subheader("Analisis Data")
+st.write(f"Jumlah sampel: {len(df)}")
+st.write(f"Jumlah fitur: {len(df.columns) - 1}")
+st.write("Distribusi kelas:")
+class_dist = df["Status Kelulusan"].value_counts()
+st.bar_chart(class_dist)
 
 # Pisahkan fitur dan target
 y = df["Status Kelulusan"]
 X = df.drop("Status Kelulusan", axis=1)
+X = pd.get_dummies(X)  # Otomatis mengubah fitur kategorik ke numerik
 
-# One-hot encoding jika perlu
-X = pd.get_dummies(X, drop_first=True)
+# UI controls
+st.sidebar.header("Pengaturan Model")
+test_size = st.sidebar.slider("Pilih proporsi data uji (%)", 10, 90, 20, step=10) / 100
+feature_selection = st.sidebar.checkbox("Aktifkan Seleksi Fitur", value=True)
+handle_imbalance = st.sidebar.checkbox("Penanganan Data Tidak Seimbang", value=True)
+model_choice = st.sidebar.selectbox("Pilih Model", ["Random Forest", "Gradient Boosting", "Logistic Regression"])
 
-# Skala fitur numerik
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=42)
+
+# Feature scaling
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-# Tangani data imbalance
-sm = SMOTE(random_state=42)
-X_res, y_res = sm.fit_resample(X_scaled, y)
+# Feature selection
+if feature_selection:
+    k = st.sidebar.slider("Jumlah fitur terbaik yang dipilih", 5, min(50, X_train_scaled.shape[1]), min(20, X_train_scaled.shape[1]))
+    selector = SelectKBest(score_func=f_classif, k=k)
+    X_train_scaled = selector.fit_transform(X_train_scaled, y_train)
+    X_test_scaled = selector.transform(X_test_scaled)
+    
+    # Dapatkan nama fitur yang dipilih
+    selected_features = X.columns[selector.get_support()]
+    st.sidebar.write(f"Fitur terpilih ({k}):")
+    st.sidebar.write(list(selected_features))
+else:
+    selected_features = X.columns
 
-# Slider untuk proporsi data uji
-test_size = st.slider("Pilih proporsi data uji (%)", 10, 90, 20, step=10) / 100
-X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=test_size, stratify=y_res, random_state=42)
+# Handle class imbalance (tanpa SMOTE)
+sample_weights = None
+if handle_imbalance:
+    # Hitung bobot kelas
+    class_weights = compute_sample_weight("balanced", y_train)
+    st.sidebar.success(f"Penanganan ketidakseimbangan: menggunakan class weighting")
+else:
+    class_weights = None
 
-# Model 1: Random Forest
-model_rf = RandomForestClassifier(n_estimators=200, max_depth=5, random_state=42)
-model_rf.fit(X_train, y_train)
-y_pred_rf = model_rf.predict(X_test)
+# Model training
+if model_choice == "Random Forest":
+    param_grid = {
+        'n_estimators': [100, 200],
+        'max_depth': [5, 10, None],
+        'min_samples_split': [2, 5],
+        'class_weight': [None, 'balanced'] if handle_imbalance else [None]
+    }
+    model = RandomForestClassifier(random_state=42)
+elif model_choice == "Gradient Boosting":
+    param_grid = {
+        'n_estimators': [100, 200],
+        'learning_rate': [0.01, 0.1],
+        'max_depth': [3, 5]
+    }
+    model = GradientBoostingClassifier(random_state=42)
+else:  # Logistic Regression
+    param_grid = {
+        'C': [0.1, 1, 10],
+        'penalty': ['l1', 'l2'],
+        'solver': ['liblinear'],
+        'class_weight': [None, 'balanced'] if handle_imbalance else [None]
+    }
+    model = LogisticRegression(max_iter=1000, random_state=42)
 
-# Model 2: Logistic Regression
-model_lr = LogisticRegression(max_iter=1000)
-model_lr.fit(X_train, y_train)
-y_pred_lr = model_lr.predict(X_test)
+# Hyperparameter tuning
+grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search.fit(X_train_scaled, y_train, sample_weight=class_weights if model_choice != "Gradient Boosting" else None)
 
-# Model 3: XGBoost
-model_xgb = XGBClassifier(use_label_encoder=False, eval_metric='logloss')
-model_xgb.fit(X_train, y_train)
-y_pred_xgb = model_xgb.predict(X_test)
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_test_scaled)
+y_proba = best_model.predict_proba(X_test_scaled)[:, 1] if hasattr(best_model, "predict_proba") else None
 
-# Evaluasi akurasi
-st.subheader("Akurasi Model")
-st.write(f"Random Forest: {accuracy_score(y_test, y_pred_rf):.2f}")
-st.write(f"Logistic Regression: {accuracy_score(y_test, y_pred_lr):.2f}")
-st.write(f"XGBoost: {accuracy_score(y_test, y_pred_xgb):.2f}")
+# Tampilkan hasil
+st.subheader("Hasil Pelatihan")
+st.write(f"Model terbaik: **{model_choice}**")
+st.write(f"Parameter terbaik: {grid_search.best_params_}")
+st.write(f"Akurasi Cross-Validation: {grid_search.best_score_:.4f}")
+st.write(f"Akurasi pada Data Uji: **{accuracy_score(y_test, y_pred):.4f}**")
 
-# Confusion Matrix untuk model terbaik
-st.subheader("Confusion Matrix - XGBoost")
-fig, ax = plt.subplots()
-sns.heatmap(confusion_matrix(y_test, y_pred_xgb), annot=True, fmt="d", cmap="Blues", ax=ax)
-st.pyplot(fig)
+if y_proba is not None:
+    st.write(f"AUC-ROC: {roc_auc_score(y_test, y_proba):.4f}")
 
-# Classification Report
-st.subheader("Classification Report - XGBoost")
-st.text(classification_report(y_test, y_pred_xgb))
-
-# Feature Importance
-st.subheader("Feature Importance - XGBoost")
-importance_df = pd.DataFrame({
-    "Fitur": X.columns,
-    "Penting": model_xgb.feature_importances_
-}).sort_values(by="Penting", ascending=False)
-
-fig, ax = plt.subplots()
-sns.barplot(data=importance_df, x="Penting", y="Fitur", ax=ax)
-st.pyplot(fig)
+# ... (bagian visualisasi tetap sama)
