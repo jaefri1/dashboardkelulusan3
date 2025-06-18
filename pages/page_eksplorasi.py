@@ -49,8 +49,8 @@ st.markdown(
 ---
 ## 🔍 Korelasi Antar Fitur
 
-Peta panas berikut menunjukkan korelasi antar fitur numerik.  
-Warna biru ke merah menunjukkan hubungan negatif hingga positif antar variabel.
+Peta panas berikut menggambarkan tingkat korelasi antar fitur numerik dalam dataset.
+Gradasi warna dari biru ke merah menunjukkan kekuatan dan arah hubungan antar variabel, di mana warna merah menunjukkan korelasi positif yang kuat, sedangkan biru menunjukkan korelasi negatif.
 """
 )
 fig2, ax2 = plt.subplots(figsize=(10, 6))
