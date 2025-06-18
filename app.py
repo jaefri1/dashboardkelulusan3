@@ -7,21 +7,13 @@ def load_data():
 
 df = load_data()
 
-st.sidebar.title("Navigasi")
-st.sidebar.markdown("""
-- Halaman Utama  
-- EDA  
-- Performa Model  
-- Prediksi
-""")
-
 st.set_page_config(page_title="Dashboard Kelulusan Mahasiswa", layout="wide", page_icon="🎓")
 
 st.title("🎓 Dashboard Kelulusan Mahasiswa")
 st.markdown("### Selamat datang! 👋")
 
 st.markdown(
-    """
+    """"
 Kami dari **Kelompok 13** mempersembahkan sebuah dashboard interaktif yang membahas  
 **Analisis Kelulusan Mahasiswa Berbasis Data Mining**📊🎯
 
@@ -35,8 +27,14 @@ Dashboard ini dirancang untuk memberikan wawasan mengenai karakteristik mahasisw
 - 🧮 **Prediksi Kelulusan**: Formulir untuk memprediksi status kelulusan mahasiswa
 
 ---
+
+⚠️ Catatan Penting:
+Prediksi dari aplikasi ini bersifat **informasi awal** dan tidak dapat menggantikan analisis akademik secara menyeluruh. Mohon gunakan hasil prediksi ini secara bijak.
+
+---
+
 📂 **Sumber Data:**  
 [Dataset Kelulusan Mahasiswa - Kaggle](https://www.kaggle.com/datasets/afitoindrapermana/dataset-kelulusan-mahasiswa)
-"""
+""""
 )
 st.dataframe(df)
