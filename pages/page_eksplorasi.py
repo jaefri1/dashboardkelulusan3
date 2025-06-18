@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
     st.title("📊 Eksplorasi Data Kelulusan Mahasiswa")
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/dataset_kelulusan_mahasiswa.csv")
+
+df = load_data()
     st.markdown("""
     Halaman ini menyajikan eksplorasi data awal (EDA) dari dataset kelulusan mahasiswa untuk memahami distribusi dan pola antar fitur.
     """)
