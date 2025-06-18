@@ -11,15 +11,49 @@ def load_data():
 
 df = load_data()
 
-st.subheader("Statistik Deskriptif")
-st.write(df.describe())
+st.markdown(
+    """
+## 📌 Statistik Deskriptif
 
-st.subheader("Visualisasi Distribusi Status Kelulusan")
-fig, ax = plt.subplots()
-sns.countplot(x="Status Kelulusan", data=df, ax=ax)
-st.pyplot(fig)
+Berikut adalah ringkasan statistik untuk fitur numerik dalam dataset:
+"""
+)
+st.dataframe(df.describe(), use_container_width=True)
 
-st.subheader("Korelasi Fitur")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(df.corr(numeric_only=True), annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
-st.pyplot(fig)
+st.markdown(
+    """
+---
+## 📈 Distribusi Status Kelulusan
+
+Visualisasi ini menampilkan jumlah mahasiswa yang **lulus** dan **tidak lulus** berdasarkan label di dataset.
+"""
+)
+fig1, ax1 = plt.subplots()
+sns.set_style("whitegrid")
+sns.countplot(x="Status Kelulusan", data=df, palette="pastel", ax=ax1)
+ax1.set_title("Distribusi Status Kelulusan", fontsize=14)
+ax1.set_xlabel("Status Kelulusan")
+ax1.set_ylabel("Jumlah Mahasiswa")
+st.pyplot(fig1)
+
+st.markdown(
+    """
+---
+## 🔍 Korelasi Antar Fitur
+
+Peta panas berikut menunjukkan korelasi antar fitur numerik.  
+Warna biru ke merah menunjukkan hubungan negatif hingga positif antar variabel.
+"""
+)
+fig2, ax2 = plt.subplots(figsize=(10, 6))
+corr = df.corr(numeric_only=True)
+sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2, linewidths=0.5)
+st.pyplot(fig2)
+
+st.markdown(
+    """
+---
+ℹ️ **Catatan:**  
+Analisis ini merupakan tahap awal yang penting sebelum proses pemodelan machine learning dilakukan.
+"""
+)
