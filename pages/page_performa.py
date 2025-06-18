@@ -8,6 +8,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 st.title("🤖 Pelatihan Model Prediksi Kelulusan (Optimasi)")
+st.markdown(
+    """
+    Pada halaman ini akan ditunjukkan tingkat akurasi dari model yang telah dipilih, di mana kami menggunakan model Random Forest Classifier 📈🧮
+"""
+)
 
 @st.cache_data
 def load_data():
