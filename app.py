@@ -28,11 +28,6 @@ Dashboard ini dirancang untuk memberikan wawasan mengenai karakteristik mahasisw
 
 ---
 
-⚠️ Catatan Penting:
-Prediksi dari aplikasi ini bersifat **informasi awal** dan tidak dapat menggantikan analisis akademik secara menyeluruh. Mohon gunakan hasil prediksi ini secara bijak.
-
----
-
 📂 **Sumber Data:**  
 [Dataset Kelulusan Mahasiswa - Kaggle](https://www.kaggle.com/datasets/afitoindrapermana/dataset-kelulusan-mahasiswa)
 """"
