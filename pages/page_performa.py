@@ -15,56 +15,46 @@ def load_data():
 
 df = load_data()
 
-# Encoding
-le = LabelEncoder()
-df["Pekerjaan Sambil Kuliah"] = le.fit_transform(df["Pekerjaan Sambil Kuliah"])
-df["Kategori Kehadiran"] = le.fit_transform(df["Kategori Kehadiran"])
+# Label encoding
+le_kerja = LabelEncoder()
+le_hadir = LabelEncoder()
+df["Pekerjaan Sambil Kuliah"] = le_kerja.fit_transform(df["Pekerjaan Sambil Kuliah"])
+df["Kategori Kehadiran"] = le_hadir.fit_transform(df["Kategori Kehadiran"])
 
-# Target dan fitur
+# Split fitur dan target
 X = df.drop("Status Kelulusan", axis=1)
 y = df["Status Kelulusan"]
 
-# Tampilkan distribusi label
-total_lulus = y.value_counts()
-st.subheader("Distribusi Label Status Kelulusan")
-st.bar_chart(total_lulus)
+# Slider untuk proporsi data training
+train_size = st.slider("Pilih persentase data untuk pelatihan", 0.1, 0.9, 0.8, step=0.1)
 
-# Slider untuk memilih proporsi data latih
-test_size = st.slider("Pilih persentase data untuk pengujian", min_value=0.1, max_value=0.9, step=0.1, value=0.2)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, stratify=y, random_state=42)
+# Stratified split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, train_size=train_size, random_state=42, stratify=y
+)
 
-# Model
-model = RandomForestClassifier(n_estimators=200, random_state=42, max_depth=5)
+# Model training
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
-# Akurasi
-st.write(f"Akurasi: {accuracy_score(y_test, y_pred):.2f}")
+# Evaluasi
+st.write(f"**Akurasi:** {accuracy_score(y_test, y_pred):.2f}")
 
-# Confusion Matrix
 st.subheader("Confusion Matrix")
 fig, ax = plt.subplots()
 sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", ax=ax)
-ax.set_xlabel("Predicted")
-ax.set_ylabel("Actual")
 st.pyplot(fig)
 
-# Visualisasi y_test vs y_pred
-st.subheader("Perbandingan Nilai Sebenarnya dan Prediksi")
-compare_df = pd.DataFrame({"Aktual": y_test.values, "Prediksi": y_pred})
-st.dataframe(compare_df.reset_index(drop=True))
-
-# Classification Report
 st.subheader("Classification Report")
 st.text(classification_report(y_test, y_pred))
 
-# Feature Importance
 st.subheader("Feature Importance")
 importance_df = pd.DataFrame({
     "Fitur": X.columns,
     "Penting": model.feature_importances_
 }).sort_values(by="Penting", ascending=False)
 
-fig2, ax2 = plt.subplots()
-sns.barplot(data=importance_df, x="Penting", y="Fitur", ax=ax2)
-st.pyplot(fig2)
+fig, ax = plt.subplots()
+sns.barplot(data=importance_df, x="Penting", y="Fitur", ax=ax)
+st.pyplot(fig)
