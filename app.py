@@ -9,10 +9,26 @@ df = load_data()
 
 st.set_page_config(page_title="Dashboard Kelulusan Mahasiswa", layout="wide", page_icon="🎓")
 
-st.title("🎓 Dashboard Kelulusan Mahasiswa")
-st.write("Gunakan sidebar untuk berpindah ke halaman-halaman berikut")
-st.write("halaman 1 page eksplorasi yang berisi dataset dan karakteristiknya atau EDA (exploratory data analysis).") 
-st.write("halaman 2 page performa yang berisi berisi hasil pelatihan model.")
-st.write("halaman 3 page prediksi yang berisi formulir untuk melakukan prediksi dan hasilnya.")
-st.write("dan berikut adalah dataset kelulusan mahasiswa yang digunakan dari https://www.kaggle.com/datasets/afitoindrapermana/dataset-kelulusan-mahasiswa")
+st.markdown("#🎓 Dashboard Kelulusan Mahasiswa")
+st.markdown("### Selamat datang! 👋")
+
+st.markdown(
+    """
+Kami dari **Kelompok 13** mempersembahkan sebuah dashboard interaktif yang membahas  
+**Analisis Kelulusan Mahasiswa menggunakan teknik Data Mining**. 📊🎯
+
+Proyek ini bertujuan untuk memberikan wawasan mengenai karakteristik mahasiswa, mengevaluasi performa model prediksi, serta memperkirakan kelulusan berdasarkan data historis.
+
+---
+
+🔍 **Gunakan menu di sebelah kiri untuk menjelajahi fitur-fitur berikut:**
+- 📊 **EDA & Dataset**: Visualisasi dan penjelajahan data kelulusan
+- ⚙️ **Performa Model**: Menampilkan evaluasi dari model klasifikasi yang digunakan
+- 🧮 **Prediksi Kelulusan**: Formulir untuk memprediksi status kelulusan mahasiswa
+
+---
+📂 **Sumber Data:**  
+[Dataset Kelulusan Mahasiswa - Kaggle](https://www.kaggle.com/datasets/afitoindrapermana/dataset-kelulusan-mahasiswa)
+"""
+)
 st.dataframe(df)
