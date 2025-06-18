@@ -3,8 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Halaman Utama - Eksplorasi Data
-def home_page(df):
     st.title("📊 Eksplorasi Data Kelulusan Mahasiswa")
     st.markdown("""
     Halaman ini menyajikan eksplorasi data awal (EDA) dari dataset kelulusan mahasiswa untuk memahami distribusi dan pola antar fitur.
