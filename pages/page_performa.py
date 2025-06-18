@@ -17,6 +17,13 @@ def load_data():
 
 df = load_data()
 
+st.markdown(
+    """
+    Pada halaman ini akan ditunjukkan tingkat akurasi dari model yang telah dipilih, 
+    di mana aplikasi ini menggunakan model "Random Forest Classifier* 📈🧮
+    """
+)
+
 # Tampilkan preview data
 st.write("### Contoh data:")
 st.dataframe(df.head())
